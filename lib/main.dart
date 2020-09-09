@@ -229,7 +229,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   loginData() async {
-    String myUrl = "http://realboxapp.com/task/loginapi.php";
+    String myUrl = "http://mydomain.com/task/loginapi.php";
     String email = FormCard.emailController.text.toString().trim().toLowerCase();
     String password = FormCard.passwordController.text.toString().trim().toLowerCase();
 

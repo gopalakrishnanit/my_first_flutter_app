@@ -229,7 +229,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   loginData() async {
-    String myUrl = "http://domain.com/task/loginapi.php";
+    String myUrl = "http://domain.com/task/loginapi.php"; //your domain name
     String email = FormCard.emailController.text.toString().trim().toLowerCase();
     String password = FormCard.passwordController.text.toString().trim().toLowerCase();
 

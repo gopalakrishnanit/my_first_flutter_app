@@ -12,19 +12,10 @@ class FormCard extends StatelessWidget {
       width: double.infinity,
 //      height: ScreenUtil.getInstance().setHeight(500),
       padding: EdgeInsets.only(bottom: 1),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8.0),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black12,
-                offset: Offset(0.0, 15.0),
-                blurRadius: 15.0),
-            BoxShadow(
-                color: Colors.black12,
-                offset: Offset(0.0, -10.0),
-                blurRadius: 10.0),
-          ]),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8.0), boxShadow: [
+        BoxShadow(color: Colors.black12, offset: Offset(0.0, 15.0), blurRadius: 15.0),
+        BoxShadow(color: Colors.black12, offset: Offset(0.0, -10.0), blurRadius: 10.0),
+      ]),
       child: Padding(
         padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
         child: Column(
@@ -32,35 +23,27 @@ class FormCard extends StatelessWidget {
           children: <Widget>[
             Text("Login",
                 style: TextStyle(
-                    fontSize: ScreenUtil.getInstance().setSp(45),
-                    fontFamily: "Poppins-Bold",
-                    letterSpacing: .6)),
+                    fontSize: ScreenUtil.getInstance().setSp(45), fontFamily: "Poppins-Bold", letterSpacing: .6)),
             SizedBox(
               height: ScreenUtil.getInstance().setHeight(30),
             ),
             Text("Username",
-                style: TextStyle(
-                    fontFamily: "Poppins-Medium",
-                    fontSize: ScreenUtil.getInstance().setSp(26))),
+                style: TextStyle(fontFamily: "Poppins-Medium", fontSize: ScreenUtil.getInstance().setSp(26))),
             TextField(
               controller: emailController,
-              decoration: InputDecoration(
-                  hintText: "username",
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
+              decoration:
+                  InputDecoration(hintText: "username", hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
             ),
             SizedBox(
               height: ScreenUtil.getInstance().setHeight(30),
             ),
             Text("PassWord",
-                style: TextStyle(
-                    fontFamily: "Poppins-Medium",
-                    fontSize: ScreenUtil.getInstance().setSp(26))),
+                style: TextStyle(fontFamily: "Poppins-Medium", fontSize: ScreenUtil.getInstance().setSp(26))),
             TextField(
               controller: passwordController,
               obscureText: true,
-              decoration: InputDecoration(
-                  hintText: "Password",
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
+              decoration:
+                  InputDecoration(hintText: "Password", hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
             ),
             SizedBox(
               height: ScreenUtil.getInstance().setHeight(35),
@@ -71,9 +54,7 @@ class FormCard extends StatelessWidget {
                 Text(
                   "Forgot Password?",
                   style: TextStyle(
-                      color: Colors.blue,
-                      fontFamily: "Poppins-Medium",
-                      fontSize: ScreenUtil.getInstance().setSp(28)),
+                      color: Colors.blue, fontFamily: "Poppins-Medium", fontSize: ScreenUtil.getInstance().setSp(28)),
                 )
               ],
             )

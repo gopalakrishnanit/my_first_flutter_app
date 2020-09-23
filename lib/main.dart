@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
+import 'package:myfirstflutterapp/Widgets/Register.dart';
 
 import 'CustomIcons.dart';
 import 'Widgets/FormCard.dart';
@@ -133,8 +134,6 @@ class _MyAppState extends State<MyApp> {
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: () {
-                                print('hello');
-                                //   userLogin();
                                 loginData();
                               },
                               child: Center(
@@ -214,7 +213,9 @@ class _MyAppState extends State<MyApp> {
                         style: TextStyle(fontFamily: "Poppins-Medium"),
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => Register()));
+                        },
                         child: Text("SignUp", style: TextStyle(color: Color(0xFF5d74e3), fontFamily: "Poppins-Bold")),
                       )
                     ],
@@ -229,22 +230,21 @@ class _MyAppState extends State<MyApp> {
   }
 
   loginData() async {
-    String myUrl = "http://mydomain.com/task/loginapi.php"; //change your domain
+    String myUrl = "http://realboxapp.com/task/loginapi.php";
     String email = FormCard.emailController.text.toString().trim().toLowerCase();
     String password = FormCard.passwordController.text.toString().trim().toLowerCase();
-
+    print(password);
     final response = await http
         .post(myUrl, headers: {'Accept': 'application/json'}, body: {"username": "$email", "password": "$password"});
     var status = response.body.contains('error');
-
-    var data = json.decode(response.body);
+    print(status);
+    var data = json.decode(response.body.toString().trim());
     print(data);
 
     if (status) {
       print('data : ${data["error"]}');
     } else {
-      print('data : ${data["mobile"]}');
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => FormCard()));
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Register()));
     }
   }
 }

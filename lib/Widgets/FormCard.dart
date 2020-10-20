@@ -5,6 +5,7 @@ class FormCard extends StatelessWidget {
   // Getting value from TextField widget.
   static TextEditingController emailController = TextEditingController();
   static TextEditingController passwordController = TextEditingController();
+  static TextEditingController forgetcontroller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +56,9 @@ class FormCard extends StatelessWidget {
                   "Forgot Password?",
                   style: TextStyle(
                       color: Colors.blue, fontFamily: "Poppins-Medium", fontSize: ScreenUtil.getInstance().setSp(28)),
-                )
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),

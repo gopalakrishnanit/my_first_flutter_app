@@ -11,6 +11,13 @@ import 'package:myfirstflutterapp/Widgets/FormCard.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
+enum FileType {
+  ANY,
+  IMAGE,
+  VIDEO,
+  CAMERA,
+  CUSTOM,
+}
 
 class Register extends StatefulWidget {
   @override
@@ -20,8 +27,16 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   String errorMessage = '';
   String successMessage = '';
+  String _filePath;
 
-  // final FirebaseAuth auth = FirebaseAuth.instance;
+  //static const MethodChannel _channel = const MethodChannel('file_picker');
+  static const String _tag = 'FilePicker';
+  String _fileName = '...';
+  String _path = '...';
+  String _extension;
+  bool _hasValidMime = false;
+  FileType _pickingType;
+  TextEditingController _controller = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -327,6 +342,7 @@ class _RegisterState extends State<Register> {
                 InkWell(
                   onTap: () {
                     //  save();
+                    //getFilePath();
                     cred();
                     /*signUp().then((user) {
                       if (user != null) {
@@ -429,4 +445,82 @@ class _RegisterState extends State<Register> {
       default:
     }
   }
+
+/* void pick() async {
+    try {
+      String filePath = await FilePicker.getFilePath(type: FileType.ANY);
+      if (filePath == '') {
+        return;
+      }
+      print("File path: " + filePath);
+      setState(() {
+        this._filePath = filePath;
+      });
+    } on PlatformException catch (e) {
+      print("Error while picking the file: " + e.toString());
+    }
+  }*/
+/*static Future<String> _getPath(String type) async {
+    try {
+      return await _channel.invokeMethod(type);
+    } on PlatformException catch (e) {
+      print("[$_tag] Platform exception: " + e.toString());
+    } catch (e) {
+      print(
+          "[$_tag] Unsupported operation. This probably have happened because [${type.split('_').last}] is an unsupported file type. You may want to try FileType.ALL instead.");
+    }
+    return null;
+  }
+
+  static Future<String> _getImage(ImageSource type) async {
+    try {
+      var image = await ImagePicker.pickImage(source: type);
+      return image?.path;
+    } on PlatformException catch (e) {
+      print("[$_tag] Platform exception: " + e.toString());
+    }
+    return null;
+  }
+
+  static Future<Map<String, dynamic>> getFilePath({FileType type = FileType.ANY, String fileExtension}) async {
+    switch (type) {
+      case FileType.IMAGE:
+        final result = await _getImage(ImageSource.gallery);
+        return <String, String>{'path': result};
+      case FileType.CAMERA:
+        final result = await _getImage(ImageSource.camera);
+        return <String, String>{'path': result};
+      case FileType.VIDEO:
+        final result = await _channel.invokeMethod('VIDEO');
+        return Map<String, dynamic>.from(result);
+      case FileType.ANY:
+        final result = await _getPath('ANY');
+        return <String, String>{'path': result};
+      case FileType.CUSTOM:
+        final result = await _getPath('__CUSTOM_' + (fileExtension ?? ''));
+        return <String, String>{'path': result};
+      default:
+        final result = await _getPath('ANY');
+        return <String, String>{'path': result};
+    }
+  }*/
+
+/*void _openFileExplorer() async {
+    if (_pickingType != FileType.CUSTOM || _hasValidMime) {
+      try {
+        final Map<String, dynamic> result =
+            await FilePicker.getFilePath(type: _pickingType, fileExtension: _extension);
+        _path = result['path'];
+        print(result);
+      } on PlatformException catch (e) {
+        print("Unsupported operation" + e.toString());
+      }
+
+      if (!mounted) return;
+
+      setState(() {
+        _fileName = _path != null ? _path.split('/').last : '...';
+      });
+    }
+  }*/
 }

@@ -1,15 +1,20 @@
 import 'dart:convert';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
+import 'package:myfirstflutterapp/DataTableDemo.dart';
 import 'package:myfirstflutterapp/Widgets/Register.dart';
 
 import 'CustomIcons.dart';
 import 'Widgets/FormCard.dart';
 import 'Widgets/SocialIcon.dart';
+import 'Widgets/navigation.dart';
+import 'chat/login.dart';
 
-void main() => runApp(MaterialApp(
+void main() =>
+    runApp(MaterialApp(
       home: MyApp(),
       debugShowCheckedModeBanner: false,
     ));
@@ -134,7 +139,9 @@ class _MyAppState extends State<MyApp> {
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: () {
-                                loginData();
+                                // loginData();
+                                print("click");
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => navigation()));
                               },
                               child: Center(
                                 child: Text("SIGNIN",
@@ -174,7 +181,10 @@ class _MyAppState extends State<MyApp> {
                           Color(0xFF00eaf8),
                         ],
                         iconData: CustomIcons.facebook,
-                        onPressed: () {},
+                        onPressed: () {
+                          print("fb");
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => DataTableDemo()));
+                        },
                       ),
                       SocialIcon(
                         colors: [
@@ -182,7 +192,11 @@ class _MyAppState extends State<MyApp> {
                           Color(0xFFff355d),
                         ],
                         iconData: CustomIcons.googlePlus,
-                        onPressed: () {},
+                        onPressed: () {
+                          print("sdfgg");
+                          mains();
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen()));
+                        },
                       ),
                       SocialIcon(
                         colors: [
@@ -229,6 +243,12 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
+  mains() async {
+    print('ssdsfsdfsdfsdfsf');
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+  }
+
   loginData() async {
     String myUrl = "http://realboxapp.com/task/loginapi.php";
     String email = FormCard.emailController.text.toString().trim().toLowerCase();
@@ -244,7 +264,8 @@ class _MyAppState extends State<MyApp> {
     if (status) {
       print('data : ${data["error"]}');
     } else {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Register()));
+      //Navigator.of(context).push(MaterialPageRoute(builder: (context) => Register()));
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => DataTableDemo()));
     }
   }
 }

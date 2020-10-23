@@ -69,8 +69,8 @@ class _RegisterState extends State<Register> {
             width: double.infinity,
             decoration: BoxDecoration(
                 gradient: LinearGradient(begin: Alignment.bottomCenter, end: Alignment.topCenter, colors: [
-              Colors.black.withOpacity(.9),
-              Colors.black.withOpacity(.1),
+              Colors.blue.withOpacity(.3),
+              Colors.blueAccent.withOpacity(.1),
             ])),
           ),
           Padding(

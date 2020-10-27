@@ -129,7 +129,9 @@ class _multipickimageState extends State<multipickimage> {
     if (null != images) {
       for (Asset asset in images) {
         final byteData = await asset.getByteData();
-        String fname = asset.name;
+        print(byteData);
+        //String fname = asset.name;
+        String fname = "multipartFiles$count";
         print(fname);
         List<int> imageData = byteData.buffer.asUint8List();
         MultipartFile multipartFile = new MultipartFile.fromBytes(

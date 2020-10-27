@@ -5,9 +5,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:myfirstflutterapp/Widgets/FormCard.dart';
+import 'package:myfirstflutterapp/model/TodoItem.dart';
+import 'package:myfirstflutterapp/services/db.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -315,17 +318,27 @@ class _RegisterState extends State<Register> {
                 SizedBox(
                   height: 10,
                 ),
-                Container(
-                  height: 50,
-                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50)),
-                  margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                  child: Center(
-                      child: Text(
-                    'Register',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
-                  )),
+                InkWell(
+                  onTap: () {
+                    Fluttertoast.showToast(
+                        msg: "Success",
+                        backgroundColor: Colors.white,
+                        fontSize: 25,
+                        gravity: ToastGravity.CENTER,
+                        textColor: Colors.pink);
+                    _save();
+                  },
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50)),
+                    margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                    child: Center(
+                        child: Text(
+                      'Register',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    )),
+                  ),
                 ),
-
                 SizedBox(
                   height: 10,
                 ),
@@ -341,19 +354,7 @@ class _RegisterState extends State<Register> {
                 ),
                 InkWell(
                   onTap: () {
-                    //  save();
-                    //getFilePath();
                     cred();
-                    /*signUp().then((user) {
-                      if (user != null) {
-                        print('Registered Successfully.');
-                        setState(() {
-                          successMessage = 'Registered Successfully.\nYou can now navigate to Login Page.';
-                        });
-                      } else {
-                        print('Error while Login.');
-                      }
-                    });*/
                   },
                   child: Container(
                     height: 30,
@@ -372,6 +373,25 @@ class _RegisterState extends State<Register> {
         ],
       ),
     );
+  }
+
+  /***************insert to sqlite***************************/
+  void _save() async {
+    await DB.init();
+
+    Navigator.of(context).pop();
+    TodoItem item = TodoItem(task: 'task', complete: false);
+
+    await DB.insert(TodoItem.table, item);
+    refresh();
+  }
+
+  void refresh() async {
+    List<Map<String, dynamic>> _results = await DB.query(TodoItem.table);
+    print(_results);
+    print(_results.toString());
+    print(_results.map((item) => TodoItem.fromMap(item)).toList());
+    setState(() {});
   }
 
   /**********normal service*****************/

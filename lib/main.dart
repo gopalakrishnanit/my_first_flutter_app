@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:myfirstflutterapp/DataTableDemo.dart';
+import 'package:myfirstflutterapp/Widgets/OtpScreen.dart';
 import 'package:myfirstflutterapp/Widgets/Register.dart';
 
 import 'CustomIcons.dart';
@@ -13,10 +15,14 @@ import 'Widgets/SocialIcon.dart';
 import 'Widgets/navigation.dart';
 import 'chat/login.dart';
 
-void main() =>
-    runApp(MaterialApp(
+void main() => runApp(MaterialApp(
       home: MyApp(),
       debugShowCheckedModeBanner: false,
+      routes: {
+        // When navigating to the "/second" route, build the SecondScreen widget.
+        '/otpscreen': (context) => OtpScreen(),
+        '/homeScreen': (BuildContext ctx) => LoginScreen(),
+      },
     ));
 
 class MyApp extends StatefulWidget {
@@ -204,7 +210,10 @@ class _MyAppState extends State<MyApp> {
                           Color(0xFF6078ea),
                         ],
                         iconData: CustomIcons.twitter,
-                        onPressed: () {},
+                        onPressed: () {
+                          clickOnLogin(context);
+                          //Navigator.of(context).push(MaterialPageRoute(builder: (context) => OtpScreen()));
+                        },
                       ),
                       SocialIcon(
                         colors: [
@@ -268,4 +277,47 @@ class _MyAppState extends State<MyApp> {
       Navigator.of(context).push(MaterialPageRoute(builder: (context) => DataTableDemo()));
     }
   }
+}
+
+Future<void> clickOnLogin(BuildContext context) async {
+  var _dialCode = '+91';
+  if (FormCard.emailController.text
+      .toString()
+      .trim()
+      .isEmpty) {
+    showErrorDialog(context, 'Contact number can\'t be empty.');
+  } else {
+    print(FormCard.emailController.text.toString().trim().toLowerCase());
+    final responseMessage = await Navigator.pushNamed(context, '/otpscreen',
+        arguments: '$_dialCode${FormCard.emailController.text.toString().trim()}');
+    if (responseMessage != null) {
+      showErrorDialog(context, responseMessage as String);
+    } else
+      showErrorDialog(context, responseMessage as String);
+  }
+}
+
+//Alert dialogue to show error and response
+void showErrorDialog(BuildContext context, String message) {
+  // set up the AlertDialog
+  final CupertinoAlertDialog alert = CupertinoAlertDialog(
+    title: const Text('Error'),
+    content: Text('\n$message'),
+    actions: <Widget>[
+      CupertinoDialogAction(
+        isDefaultAction: true,
+        child: const Text('Yes'),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+      )
+    ],
+  );
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

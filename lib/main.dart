@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:myfirstflutterapp/DataTableDemo.dart';
 import 'package:myfirstflutterapp/Widgets/OtpScreen.dart';
@@ -32,10 +33,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _isSelected = false;
+  Position _currentPosition;
+  String _currentAddress;
+
+  final Geolocator geolocator = Geolocator()..forceAndroidLocationManager;
 
   void _radio() {
     setState(() {
       _isSelected = !_isSelected;
+      _getCurrentLocation();
     });
   }
 
@@ -221,7 +227,11 @@ class _MyAppState extends State<MyApp> {
                           Color(0xFF005bea),
                         ],
                         iconData: CustomIcons.linkedin,
-                        onPressed: () {},
+                        onPressed: () {
+                          // Navigator.pop(context);
+                          setState(() {});
+                          //(context as Element).reassemble();
+                        },
                       )
                     ],
                   ),
@@ -250,6 +260,37 @@ class _MyAppState extends State<MyApp> {
         ],
       ),
     );
+  }
+
+  _getCurrentLocation() {
+    geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best).then((Position position) {
+      setState(() {
+        _currentPosition = position;
+      });
+
+      _getAddressFromLatLng();
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
+  _getAddressFromLatLng() async {
+    try {
+      List<Placemark> p =
+      await geolocator.placemarkFromCoordinates(_currentPosition.latitude, _currentPosition.longitude);
+      print(_currentPosition.latitude);
+      print(_currentPosition.longitude);
+      Placemark place = p[0];
+
+      setState(() {
+        _currentAddress =
+        "${place.locality}, ${place.postalCode}, ${place.country}, ${place.subLocality}, ${place
+            .administrativeArea}, ${place.subAdministrativeArea}, ${place.thoroughfare}, ${place.subThoroughfare}";
+        print(_currentAddress);
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   mains() async {

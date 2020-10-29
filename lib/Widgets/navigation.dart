@@ -4,6 +4,7 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:myfirstflutterapp/Widgets/mapview.dart';
 import 'package:myfirstflutterapp/Widgets/multipickimage.dart';
+import 'package:myfirstflutterapp/map/livelocation.dart';
 
 //import 'package:fluttertoast/fluttertoast.dart';
 
@@ -141,6 +142,14 @@ class _Navigationstate extends State<navigation> {
               onTap: () {
                 print('dssdf');
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => mapview()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.flag),
+              title: Text("Live Location"),
+              onTap: () {
+                print('dssdf');
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => MapPage()));
               },
             ),
             ListTile(

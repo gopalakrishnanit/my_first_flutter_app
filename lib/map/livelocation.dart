@@ -7,10 +7,9 @@ import 'package:location/location.dart';
 import 'package:myfirstflutterapp/map/MapPinPillComponent.dart';
 import 'package:myfirstflutterapp/map/pin_pill_info.dart';
 
-//00000067092054359
-const double CAMERA_ZOOM = 13; //16
-const double CAMERA_TILT = 40; //80
-const double CAMERA_BEARING = 20; //30
+const double CAMERA_ZOOM = 16; //16
+const double CAMERA_TILT = 80; //80
+const double CAMERA_BEARING = 30; //30
 LatLng SOURCE_LOCATION = LatLng(9.9114, 78.1151);
 const LatLng DEST_LOCATION = LatLng(9.9225, 78.0947);
 
@@ -61,6 +60,8 @@ class MapPageState extends State<MapPage> {
     location.onLocationChanged().listen((LocationData cLoc) {
       currentLocation = cLoc;
       SOURCE_LOCATION = LatLng(currentLocation.latitude, currentLocation.longitude);
+      destinationLocation =
+          LocationData.fromMap({"latitude": DEST_LOCATION.latitude, "longitude": DEST_LOCATION.longitude});
       updatePinOnMap();
     });
     // set custom marker pins
@@ -135,8 +136,6 @@ class MapPageState extends State<MapPage> {
 
   void showPinsOnMap() {
     print("showPinsOnMap");
-
-    print(currentLocation.latitude);
     var pinPosition = LatLng(currentLocation.latitude, currentLocation.longitude);
 
     var destPosition = LatLng(destinationLocation.latitude, destinationLocation.longitude);
@@ -185,13 +184,18 @@ class MapPageState extends State<MapPage> {
     polylineCoordinates.clear();
     /*List<PointLatLng> result = await polylinePoints.getRouteBetweenCoordinates(googleAPIKey, currentLocation.latitude,
         currentLocation.longitude, destinationLocation.latitude, destinationLocation.longitude);*/
-    print("poly");
+    //print("poly");
+    /*print(currentLocation.latitude);
+    print(currentLocation.longitude);
+    print(destinationLocation.latitude);
+    print(destinationLocation.longitude);*/
 
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        googleAPIKey, // Google Maps API Key
-        PointLatLng(currentLocation.latitude, currentLocation.longitude),
-        PointLatLng(destinationLocation.latitude, destinationLocation.longitude),
-        travelMode: TravelMode.driving);
+      googleAPIKey, // Google Maps API Key
+      PointLatLng(currentLocation.latitude, currentLocation.longitude),
+      PointLatLng(destinationLocation.latitude, destinationLocation.longitude),
+      travelMode: TravelMode.transit,
+    );
 
     polylineCoordinates.add(LatLng(currentLocation.latitude, currentLocation.longitude));
     polylineCoordinates.add(LatLng(destinationLocation.latitude, destinationLocation.longitude));
@@ -199,21 +203,27 @@ class MapPageState extends State<MapPage> {
       result.forEach((PointLatLng point) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       });*/
-    print("polyline");
-    if (result.points.isNotEmpty) {
+    print(result.points.length);
+
+    /*if (result.points.isNotEmpty) {
       print("polyline not empty");
       result.points.forEach((PointLatLng point) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       });
     } else {
       print("polyline empty");
-    }
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }*/
 
     setState(() {
       _polylines.add(Polyline(
-          width: 2,
+          width: 8,
           // set the width of the polylines
-          polylineId: PolylineId("route1"),
+          polylineId: PolylineId("poly"),
+          geodesic: true,
+          jointType: JointType.round,
           color: Color.fromARGB(255, 40, 122, 198),
           startCap: Cap.roundCap,
           endCap: Cap.buttCap,

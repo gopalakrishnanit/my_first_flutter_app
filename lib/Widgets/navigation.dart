@@ -2,11 +2,16 @@ import 'dart:async';
 
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:myfirstflutterapp/Widgets/Dashboard.dart';
+import 'package:myfirstflutterapp/Widgets/Stripepayment.dart';
 import 'package:myfirstflutterapp/Widgets/mapview.dart';
 import 'package:myfirstflutterapp/Widgets/multipickimage.dart';
+import 'package:myfirstflutterapp/Widgets/webview.dart';
 import 'package:myfirstflutterapp/map/livelocation.dart';
-
-//import 'package:fluttertoast/fluttertoast.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:wc_flutter_share/wc_flutter_share.dart';
 
 import 'fryo_icon.dart';
 
@@ -73,26 +78,14 @@ class _Navigationstate extends State<navigation> {
           padding,
           new Material(
             elevation: 10.0,
-            /* child: Text(
-              "Navigation Drawer Example",
-              style: TextStyle(
-                fontSize: 20.0,
-              ),
-            ),*/
             child: new HorizontalList("Fruits & Vegetables - Best Offers", fruitsVegetables),
           )
         ],
       ),
-
-      /*child: Text(
-        "Navigation Drawer Example",
-        style: TextStyle(
-          fontSize: 20.0,
-        ),
-      )),*/
-      // ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          _settingModalBottomSheet(context);
+        },
         child: Icon(Icons.add),
       ),
       drawer: Drawer(
@@ -100,10 +93,10 @@ class _Navigationstate extends State<navigation> {
           padding: EdgeInsets.all(0),
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountEmail: Text("Akram.aic193@Gmail.com"),
-              accountName: Text("Akram Chauhan"),
+              accountEmail: Text("guest@Gmail.com"),
+              accountName: Text("Guest"),
               currentAccountPicture: CircleAvatar(
-                child: Text("AC"),
+                child: Text("CM"),
               ),
             ),
             ListTile(
@@ -113,6 +106,14 @@ class _Navigationstate extends State<navigation> {
             ),
             ListTile(
               leading: Icon(Icons.dashboard),
+              title: Text("Dashboard"),
+              onTap: () {
+                print('dash');
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Dashboard()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.category),
               title: Text("Categories"),
               onTap: () {},
             ),
@@ -122,6 +123,13 @@ class _Navigationstate extends State<navigation> {
               onTap: () {},
             ),
             ListTile(
+              leading: Icon(Icons.web_rounded),
+              title: Text("Webview"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => webview()));
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.info),
               title: Text("About Us"),
               onTap: () {},
@@ -129,7 +137,11 @@ class _Navigationstate extends State<navigation> {
             ListTile(
               leading: Icon(Icons.share),
               title: Text("Share with Friends"),
-              onTap: () {},
+              onTap: () {
+                _shareImageAndText();
+                child:
+                Text('Share file and text');
+              },
             ),
             ListTile(
               leading: Icon(Icons.rate_review),
@@ -140,27 +152,41 @@ class _Navigationstate extends State<navigation> {
               leading: Icon(Icons.map),
               title: Text("Map"),
               onTap: () {
-                print('dssdf');
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => mapview()));
               },
             ),
             ListTile(
-              leading: Icon(Icons.flag),
+              leading: Icon(Icons.pin_drop),
               title: Text("Live Location"),
               onTap: () {
-                print('dssdf');
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => MapPage()));
               },
             ),
             ListTile(
-              leading: Icon(Icons.flag),
+              leading: Icon(Icons.payment),
+              title: Text("Payment"),
+              onTap: () {
+                print('pay');
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.money),
+              title: Text("Stripe Payment"),
+              onTap: () {
+                print('pay');
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Stripepayment()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.privacy_tip),
               title: Text("Privacy Policy"),
               onTap: () {
                 print('dssdf');
               },
             ),
             ListTile(
-              leading: Icon(Icons.chat),
+              leading: Icon(Icons.image),
               title: Text("ImagePick"),
               onTap: () {
                 print('ssdf');
@@ -607,3 +633,159 @@ var items = {
     }
   }
 };
+
+/********Bottom sheet************/
+void _settingModalBottomSheet(context) {
+  showModalBottomSheet(
+      context: context,
+      builder: (BuildContext bc) {
+        return Container(
+          child: new Wrap(
+            children: <Widget>[
+              new ListTile(leading: new Icon(Icons.music_note), title: new Text('Music'), onTap: () => {}),
+              new ListTile(
+                leading: new Icon(Icons.videocam),
+                title: new Text('Video'),
+                onTap: () => {},
+              ),
+            ],
+          ),
+        );
+      });
+}
+
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  Razorpay razorpay;
+  TextEditingController textEditingController = new TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    razorpay = new Razorpay();
+
+    razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlerPaymentSuccess);
+    razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, handlerErrorFailure);
+    razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, handlerExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    razorpay.clear();
+  }
+
+  void openCheckout() {
+    var options = {
+      "key": "rzp_test_PLbERPkkqGZkOF",
+      "amount": num.parse(textEditingController.text) * 100,
+      "name": "Sample App",
+      "description": "Payment for the some random product",
+      "prefill": {"contact": "2323232323", "email": "shdjsdh@gmail.com"},
+      "external": {
+        "wallets": ["paytm"]
+      }
+    };
+
+    try {
+      razorpay.open(options);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void handlerPaymentSuccess() {
+    print("Pament success");
+    //Toast.show("Pament success", context);
+    Fluttertoast.showToast(msg: 'Pament success');
+  }
+
+  void handlerErrorFailure() {
+    print("Pament error");
+    //Toast.show("Pament error", context);
+    Fluttertoast.showToast(msg: 'Pament error');
+  }
+
+  void handlerExternalWallet() {
+    print("External Wallet");
+    //Toast.show("External Wallet", context);
+    Fluttertoast.showToast(msg: 'Wallet');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Razor Pay Tutorial"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: textEditingController,
+              decoration: InputDecoration(hintText: "amount to pay"),
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            RaisedButton(
+              color: Colors.blue,
+              child: Text(
+                "Donate Now",
+                style: TextStyle(color: Colors.white),
+              ),
+              onPressed: () {
+                openCheckout();
+              },
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/******************** Share **************************/
+void _shareImageAndText() async {
+  try {
+    final ByteData bytes = await rootBundle.load('assets/image_01.png');
+    await WcFlutterShare.share(
+        sharePopupTitle: 'share',
+        subject: 'This is subject',
+        text: 'This is text',
+        fileName: 'share.png',
+        mimeType: 'image/png',
+        bytesOfFile: bytes.buffer.asUint8List());
+  } catch (e) {
+    print('error: $e');
+  }
+}
+
+void _shareText() async {
+  try {
+    WcFlutterShare.share(
+        sharePopupTitle: 'Share', subject: 'This is subject', text: 'This is text', mimeType: 'text/plain');
+  } catch (e) {
+    print(e);
+  }
+}
+
+void _shareImage() async {
+  try {
+    final ByteData bytes = await rootBundle.load('assets/image_02.png');
+    await WcFlutterShare.share(
+        sharePopupTitle: 'share',
+        fileName: 'share.png',
+        mimeType: 'image/png',
+        bytesOfFile: bytes.buffer.asUint8List());
+  } catch (e) {
+    print('error: $e');
+  }
+}

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -15,14 +16,37 @@ import 'Widgets/FormCard.dart';
 import 'Widgets/SocialIcon.dart';
 import 'Widgets/navigation.dart';
 import 'chat/login.dart';
+import 'util/app_localization.dart';
 
 void main() => runApp(MaterialApp(
-      home: MyApp(),
+  home: MyApp(),
       debugShowCheckedModeBanner: false,
       routes: {
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/otpscreen': (context) => OtpScreen(),
         '/homeScreen': (BuildContext ctx) => LoginScreen(),
+      },
+      supportedLocales: [
+        Locale('fa', 'IR'),
+        Locale('en', 'US'),
+      ],
+      //This delegates make sure that the localization data for the proper language is loader.
+      localizationsDelegates: [
+        //A class which loads the translations from JSON files.
+        AppLocalizations.delegate,
+        //Built-in localization of basic text for Material Widget.
+        GlobalMaterialLocalizations.delegate,
+        //Built-in localization for text direction LTR/RTL.
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      localeResolutionCallback: (locale, supportedLocales) {
+        for (var supportedLocale in supportedLocales) {
+          if (supportedLocale.languageCode == locale.languageCode &&
+              supportedLocale.countryCode == locale.countryCode) {
+            return supportedLocale;
+          }
+        }
+        return supportedLocales.first;
       },
     ));
 
@@ -70,8 +94,12 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
+    ScreenUtil.instance = ScreenUtil.getInstance()
+      ..init(context);
     ScreenUtil.instance = ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
+    String language = Localizations
+        .localeOf(context)
+        .languageCode;
     return new Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: true,
@@ -131,7 +159,8 @@ class _MyAppState extends State<MyApp> {
                           SizedBox(
                             width: 8.0,
                           ),
-                          Text("Remember me", style: TextStyle(fontSize: 12, fontFamily: "Poppins-Medium"))
+                          Text(AppLocalizations.of(context).translate('Remember_me'),
+                              style: TextStyle(fontSize: 12, fontFamily: "Poppins-Medium"))
                         ],
                       ),
                       InkWell(
@@ -205,9 +234,8 @@ class _MyAppState extends State<MyApp> {
                         ],
                         iconData: CustomIcons.googlePlus,
                         onPressed: () {
-                          print("sdfgg");
                           mains();
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen()));
+                          //Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen()));
                         },
                       ),
                       SocialIcon(
@@ -297,6 +325,8 @@ class _MyAppState extends State<MyApp> {
     print('ssdsfsdfsdfsdfsf');
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
+
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen(title: "ss")));
   }
 
   loginData() async {
@@ -362,3 +392,111 @@ void showErrorDialog(BuildContext context, String message) {
     },
   );
 }
+
+/********************Intro screen*********************************/
+/*class IntroScreen extends StatefulWidget {
+  final List<OnbordingData> onbordingDataList;
+  final MaterialPageRoute pageRoute;
+
+  IntroScreen(onbordingDataList, pageRoute);
+
+  void skipPage(BuildContext context) {
+    Navigator.push(context, pageRoute);
+  }
+
+  @override
+  IntroScreenState createState() {
+    return new IntroScreenState();
+  }
+}
+
+class IntroScreenState extends State<IntroScreen> {
+  final PageController controller = new PageController();
+  int currentPage = 0;
+  bool lastPage = false;
+
+  void _onPageChanged(int page) {
+    setState(() {
+      currentPage = page;
+      if (currentPage == widget.onbordingDataList.length - 1) {
+        lastPage = true;
+      } else {
+        lastPage = false;
+      }
+    });
+  }
+
+  Widget _buildPageIndicator(int page) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 2.0),
+      height: page == currentPage ? 10.0 : 6.0,
+      width: page == currentPage ? 10.0 : 6.0,
+      decoration: BoxDecoration(
+        color: page == currentPage ? Colors.blue : Colors.grey,
+        borderRadius: BorderRadius.circular(12),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: new Color(0xFFEEEEEE),
+      padding: const EdgeInsets.all(10.0),
+      child: new Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          new Expanded(
+            flex: 1,
+            child: new Container(),
+          ),
+          new Expanded(
+            flex: 3,
+            child: new PageView(
+              children: widget.onbordingDataList,
+              controller: controller,
+              onPageChanged: _onPageChanged,
+            ),
+          ),
+          new Expanded(
+            flex: 1,
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                new FlatButton(
+                  child: new Text(lastPage ? "" : "SKIP",
+                      style: new TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16.0)),
+                  onPressed: () => lastPage
+                      ? null
+                      : widget.skipPage(
+                          context,
+                        ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Container(
+                    child: Row(
+                      children: [
+                        _buildPageIndicator(0),
+                        _buildPageIndicator(1),
+                        _buildPageIndicator(2),
+                      ],
+                    ),
+                  ),
+                ),
+                FlatButton(
+                  child: new Text(lastPage ? "GOT IT" : "NEXT",
+                      style: new TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16.0)),
+                  onPressed: () => lastPage
+                      ? widget.skipPage(context)
+                      : controller.nextPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}*/

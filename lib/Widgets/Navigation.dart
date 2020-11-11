@@ -3,24 +3,44 @@ import 'dart:async';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myfirstflutterapp/Widgets/Dashboard.dart';
+import 'package:myfirstflutterapp/Widgets/Mapview.dart';
+import 'package:myfirstflutterapp/Widgets/Multipickimage.dart';
 import 'package:myfirstflutterapp/Widgets/Stripepayment.dart';
-import 'package:myfirstflutterapp/Widgets/mapview.dart';
-import 'package:myfirstflutterapp/Widgets/multipickimage.dart';
-import 'package:myfirstflutterapp/Widgets/webview.dart';
-import 'package:myfirstflutterapp/map/livelocation.dart';
+import 'package:myfirstflutterapp/Widgets/Webview.dart';
+import 'package:myfirstflutterapp/chat/login.dart';
+import 'package:myfirstflutterapp/map/Livelocation.dart';
+import 'package:rating_dialog/rating_dialog.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:wc_flutter_share/wc_flutter_share.dart';
 
 import 'fryo_icon.dart';
 
-class navigation extends StatefulWidget {
+class Navigation extends StatefulWidget {
   @override
   _Navigationstate createState() => _Navigationstate();
 }
 
-class _Navigationstate extends State<navigation> {
+class _Navigationstate extends State<Navigation> {
+  String _timeString;
+
+//  Timer _timer;
+  int _start = 50;
+  int endTime = DateTime.now().millisecondsSinceEpoch + 10000 * 60;
+
+  @override
+  void initState() {
+    super.initState();
+
+    startTimers();
+    // startTimer();
+    _timeString = "${DateTime.now().hour} : ${DateTime.now().minute} :${DateTime.now().second}";
+    //print("navig $_timeString");
+    Timer.periodic(Duration(seconds: 1), (Timer t) => _getCurrentTime());
+  }
+
   var padding = new Padding(
     padding: EdgeInsets.all(5.0),
   );
@@ -39,6 +59,58 @@ class _Navigationstate extends State<navigation> {
       backgroundColor: Colors.white,
       body: new ListView(
         children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(left: 5, top: 5, right: 5, bottom: 5),
+            child: Text(
+              _timeString,
+              //"$_start",
+              textAlign: TextAlign.right,
+              style: TextStyle(color: Colors.red, fontSize: 12, fontWeight: FontWeight.w700, fontFamily: 'Poppins'),
+            ),
+          ),
+          CountdownTimer(
+            endTime: endTime,
+            widgetBuilder: (BuildContext context, CurrentRemainingTime time) {
+              List<Widget> list = [];
+              if (time.days != null) {
+                list.add(Row(
+                  children: <Widget>[
+                    Icon(Icons.sentiment_dissatisfied),
+                    Text(time.days.toString()),
+                  ],
+                ));
+              }
+              if (time.hours != null) {
+                list.add(Row(
+                  children: <Widget>[
+                    Icon(Icons.sentiment_satisfied),
+                    Text(time.hours.toString()),
+                  ],
+                ));
+              }
+              if (time.min != null) {
+                list.add(Row(
+                  children: <Widget>[
+                    Icon(Icons.sentiment_very_dissatisfied),
+                    Text(time.min.toString()),
+                  ],
+                ));
+              }
+              if (time.sec != null) {
+                list.add(Row(
+                  children: <Widget>[
+                    Icon(Icons.sentiment_very_satisfied),
+                    Text(time.sec.toString()),
+                  ],
+                ));
+              }
+
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: list,
+              );
+            },
+          ),
           new Material(
             elevation: 10.0,
             child: Container(
@@ -126,7 +198,7 @@ class _Navigationstate extends State<navigation> {
               leading: Icon(Icons.web_rounded),
               title: Text("Webview"),
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => webview()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Webview()));
               },
             ),
             ListTile(
@@ -135,25 +207,102 @@ class _Navigationstate extends State<navigation> {
               onTap: () {},
             ),
             ListTile(
-              leading: Icon(Icons.share),
-              title: Text("Share with Friends"),
-              onTap: () {
-                _shareImageAndText();
-                child:
-                Text('Share file and text');
-              },
-            ),
+                leading: Icon(Icons.share),
+                title: Text("Share with Friends"),
+                onTap: () {
+                  List<String> colorList = ['Image', 'Text', 'Image & Text'];
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Favorite Color'),
+                          content: Container(
+                            width: double.minPositive,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: colorList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return ListTile(
+                                  title: Text(colorList[index]),
+                                  onTap: () {
+                                    Navigator.pop(context, colorList[index]);
+                                    if (colorList[index] == 'Image') _shareImage();
+                                    if (colorList[index] == 'Text') _shareText();
+                                    if (colorList[index] == 'Image & Text') _shareImageAndText();
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      });
+                }),
             ListTile(
               leading: Icon(Icons.rate_review),
               title: Text("Rate and Review"),
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                    context: context,
+                    barrierDismissible: true, // set to false if you want to force a rating
+                    builder: (context) {
+                      return RatingDialog(
+                        icon: ImageIcon(
+                          AssetImage("assets/image_01.png"),
+                          size: 100,
+                        ),
+                        /*icon: const Icon(
+                          Icons.star,
+                          size: 100,
+                          color: Colors.blue,
+                        ),*/
+                        // set your own image/icon widget
+                        title: "Flutter Rating Dialog",
+                        description: "Tap a star to give your rating.",
+                        submitButton: "SUBMIT",
+                        alternativeButton: "Contact us instead?",
+                        // optional
+                        positiveComment: "We are so happy to hear 😍",
+                        // optional
+                        negativeComment: "We're sad to hear 😭",
+                        // optional
+                        accentColor: Colors.blue,
+                        // optional
+                        onSubmitPressed: (int rating) {
+                          print("onSubmitPressed: rating = $rating");
+                          // TODO: open the app's page on Google Play / Apple App Store
+                        },
+                        onAlternativePressed: () {
+                          print("onAlternativePressed: do something");
+                          // TODO: maybe you want the user to contact you instead of rating a bad review
+                        },
+                      );
+                    });
+              },
             ),
             ListTile(
               leading: Icon(Icons.map),
               title: Text("Map"),
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => mapview()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Mapview()));
               },
+            ),
+            RichText(
+              text: TextSpan(
+                text: 'Can you ',
+                style: TextStyle(color: Colors.black),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: 'find the',
+                    style: TextStyle(
+                      color: Colors.green,
+                      decoration: TextDecoration.underline,
+                      decorationStyle: TextDecorationStyle.wavy,
+                    ),
+                    //recognizer: _longPressRecognizer,
+                  ),
+                  TextSpan(text: 'secret?'),
+                ],
+              ),
             ),
             ListTile(
               leading: Icon(Icons.pin_drop),
@@ -190,7 +339,14 @@ class _Navigationstate extends State<navigation> {
               title: Text("ImagePick"),
               onTap: () {
                 print('ssdf');
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => multipickimage()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Multipickimage()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text("Logout"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen()));
               },
             ),
           ],
@@ -295,18 +451,56 @@ class _Navigationstate extends State<navigation> {
     );
   }
 
-/*  Future<void> _didRecieveTranscript(MethodCall call) async {
-    // type inference will work here avoiding an explicit cast
-    final String utterance = call.arguments;
-    print(utterance.toString());
-    switch (call.method) {
-      case "didRecieveTranscript":
-        Fluttertoast.showToast(msg: "Hello ");
+  void _getCurrentTime() {
+    if (this.mounted) {
+      setState(() {
+        _timeString =
+        "${DateTime
+            .now()
+            .year} : ${DateTime
+            .now()
+            .month
+            .toString()
+            .padLeft(2, '0')} : ${DateTime
+            .now()
+            .day
+            .toString()
+            .padLeft(2, '0')}  ${DateTime
+            .now()
+            .hour
+            .toString()
+            .padLeft(2, '0')} : ${DateTime
+            .now()
+            .minute
+            .toString()
+            .padLeft(2, '0')} :${DateTime
+            .now()
+            .second
+            .toString()
+            .padLeft(2, '0')}";
+      });
     }
-  }*/
+  }
+
+  void startTimers() {
+    const oneSec = const Duration(seconds: 1);
+    new Timer.periodic(
+      oneSec,
+          (Timer timer) =>
+          setState(
+                () {
+              if (_start < 1) {
+                timer.cancel();
+              } else {
+                _start = _start - 1;
+              }
+            },
+          ),
+    );
+  }
 }
 
-/********horizontal category***************/
+///********horizontal category***************/
 class HorizontalList extends StatelessWidget {
   final heading;
   final ids;
@@ -634,7 +828,7 @@ var items = {
   }
 };
 
-/********Bottom sheet************/
+///********Bottom sheet************/
 void _settingModalBottomSheet(context) {
   showModalBottomSheet(
       context: context,
@@ -661,12 +855,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   Razorpay razorpay;
+
+  //String _timeString;
   TextEditingController textEditingController = new TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
     razorpay = new Razorpay();
 
     razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, handlerPaymentSuccess);
@@ -752,7 +947,7 @@ class _HomeState extends State<Home> {
   }
 }
 
-/******************** Share **************************/
+///******************** Share **************************/
 void _shareImageAndText() async {
   try {
     final ByteData bytes = await rootBundle.load('assets/image_01.png');
@@ -789,3 +984,38 @@ void _shareImage() async {
     print('error: $e');
   }
 }
+
+/*void startTimer() {
+  Timer(Duration(seconds: 3), () {
+    print("Yeah, this line is printed after 3 second");
+  });
+  Timer.periodic(Duration(seconds: 1), (timer) {
+    //print(DateTime.now());
+    DateTime now = DateTime.now();
+
+    print(now.hour.toString() + ":" + now.minute.toString() + ":" + now.second.toString());
+  });
+
+  _startCountDown();
+}
+
+void _startCountDown() {
+  CountDown cd = CountDown(Duration(seconds: 10));
+  var sub = cd.stream.listen(null);
+
+  sub.onData((Duration d) {
+    print("dd $d");
+  });
+
+  sub.onDone(() {
+    print("done");
+  });
+
+  /// the countdown will have 500ms delay
+  Timer(Duration(milliseconds: 4000), () {
+    sub.pause();
+  });
+  Timer(Duration(milliseconds: 4500), () {
+    sub.resume();
+  });
+}*/

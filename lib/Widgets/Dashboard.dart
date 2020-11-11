@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:myfirstflutterapp/Widgets/Calendar.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _DashboardState extends State<Dashboard> {
           crossAxisCount: 2,
           padding: EdgeInsets.all(3.0),
           children: <Widget>[
-            makeDashboardItem('Education', Icons.book),
+            makeDashboardItem('Calendar', Icons.calendar_today),
             makeDashboardItem('Pets', Icons.pets),
             makeDashboardItem('Bike', Icons.bike_scooter),
             makeDashboardItem('Property', Icons.apartment),
@@ -50,6 +51,9 @@ class _DashboardState extends State<Dashboard> {
                 timeInSecForIosWeb: 2,
                 backgroundColor: Colors.blue,
                 textColor: Colors.white);
+            if (title == 'Calendar') {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CalendarApp()));
+            }
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

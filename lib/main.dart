@@ -1,9 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -13,10 +13,10 @@ import 'package:myfirstflutterapp/Widgets/Register.dart';
 
 import 'CustomIcons.dart';
 import 'Widgets/FormCard.dart';
+import 'Widgets/Navigation.dart';
 import 'Widgets/SocialIcon.dart';
-import 'Widgets/navigation.dart';
 import 'chat/login.dart';
-import 'util/app_localization.dart';
+//import 'util/app_localization.dart';
 
 void main() => runApp(MaterialApp(
   home: MyApp(),
@@ -26,7 +26,7 @@ void main() => runApp(MaterialApp(
         '/otpscreen': (context) => OtpScreen(),
         '/homeScreen': (BuildContext ctx) => LoginScreen(),
       },
-      supportedLocales: [
+      /*supportedLocales: [
         Locale('fa', 'IR'),
         Locale('en', 'US'),
       ],
@@ -47,8 +47,8 @@ void main() => runApp(MaterialApp(
           }
         }
         return supportedLocales.first;
-      },
-    ));
+      },*/
+));
 
 class MyApp extends StatefulWidget {
   @override
@@ -70,36 +70,34 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget radioButton(bool isSelected) => Container(
-        width: 16.0,
-        height: 16.0,
-        padding: EdgeInsets.all(2.0),
-        decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(width: 2.0, color: Colors.black)),
-        child: isSelected
-            ? Container(
-                width: double.infinity,
-                height: double.infinity,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black),
-              )
-            : Container(),
-      );
+    width: 16.0,
+    height: 16.0,
+    padding: EdgeInsets.all(2.0),
+    decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(width: 2.0, color: Colors.black)),
+    child: isSelected
+        ? Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black),
+    )
+        : Container(),
+  );
 
   Widget horizontalLine() => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
-        child: Container(
-          width: ScreenUtil.getInstance().setWidth(120),
-          height: 1.0,
-          color: Colors.black26.withOpacity(.2),
-        ),
-      );
+    padding: EdgeInsets.symmetric(horizontal: 16.0),
+    child: Container(
+      width: ScreenUtil.getInstance().setWidth(120),
+      height: 1.0,
+      color: Colors.black26.withOpacity(.2),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()
       ..init(context);
     ScreenUtil.instance = ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
-    String language = Localizations
-        .localeOf(context)
-        .languageCode;
+    // String language = Localizations.localeOf(context).languageCode;
     return new Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: true,
@@ -159,8 +157,8 @@ class _MyAppState extends State<MyApp> {
                           SizedBox(
                             width: 8.0,
                           ),
-                          Text(AppLocalizations.of(context).translate('Remember_me'),
-                              style: TextStyle(fontSize: 12, fontFamily: "Poppins-Medium"))
+                          //Text(AppLocalizations.of(context).translate('Remember_me'),
+                          Text('Remember_me', style: TextStyle(fontSize: 12, fontFamily: "Poppins-Medium"))
                         ],
                       ),
                       InkWell(
@@ -182,7 +180,7 @@ class _MyAppState extends State<MyApp> {
                               onTap: () {
                                 // loginData();
                                 print("click");
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => navigation()));
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Navigation()));
                               },
                               child: Center(
                                 child: Text("SIGNIN",
@@ -256,6 +254,7 @@ class _MyAppState extends State<MyApp> {
                         ],
                         iconData: CustomIcons.linkedin,
                         onPressed: () {
+                          splitString();
                           // Navigator.pop(context);
                           setState(() {});
                           //(context as Element).reassemble();
@@ -391,6 +390,21 @@ void showErrorDialog(BuildContext context, String message) {
       return alert;
     },
   );
+}
+
+void splitString() {
+  String s = '2019/04/01';
+  //int idx = s.indexOf("/");
+  //List parts = [s.substring(0, idx).trim(), s.substring(idx + 1).trim()];
+
+  List<String> list = s.split(new RegExp(r"/")); // this will split by space
+//  print(list);
+  print(list[0]); //kjrufqvbaSLIVBQERI
+  print(list[1]); //34685
+  print(list[2]); //aeonkfvbjrgq
+  var ll = list[1];
+  var year = list[0];
+  FormCard.emailController.text = '$year "-" $ll';
 }
 
 /********************Intro screen*********************************/

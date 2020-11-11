@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-String HOME_SCREEN = '/HomeScreen',
+/* String HOME_SCREEN = '/HomeScreen',
     IMAGE_SPLASH = '/ImageSplashScreen',
     VIDEO_SPALSH = '/VideoSplashScreen',
-    ANIMATED_SPALSH = '/AnimatedSplashScreen';
+    ANIMATED_SPALSH = '/AnimatedSplashScreen';*/
 
 class AnimatedSplashScreen extends StatefulWidget {
   @override
@@ -25,7 +25,7 @@ class SplashScreenState extends State<AnimatedSplashScreen> with SingleTickerPro
   }
 
   void navigationPage() {
-    Navigator.of(context).pushReplacementNamed(HOME_SCREEN);
+    // Navigator.of(context).pushReplacementNamed(HOME_SCREEN);
   }
 
   @override

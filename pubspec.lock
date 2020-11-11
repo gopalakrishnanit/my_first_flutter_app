@@ -92,6 +92,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  countdown:
+    dependency: "direct main"
+    description:
+      name: countdown
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   crypto:
     dependency: transitive
     description:
@@ -258,6 +265,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  flutter_calendar_carousel:
+    dependency: "direct main"
+    description:
+      name: flutter_calendar_carousel
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.1"
+  flutter_countdown_timer:
+    dependency: "direct main"
+    description:
+      name: flutter_countdown_timer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.0"
   flutter_local_notifications:
     dependency: "direct main"
     description:
@@ -322,6 +343,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.1.1"
+  font_awesome_flutter:
+    dependency: "direct main"
+    description:
+      name: font_awesome_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "8.10.0"
   geolocator:
     dependency: "direct main"
     description:
@@ -546,6 +574,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.4+1"
+  rating_dialog:
+    dependency: "direct main"
+    description:
+      name: rating_dialog
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   razorpay_flutter:
     dependency: "direct main"
     description:

@@ -68,6 +68,11 @@ dependencies:
   razorpay_flutter: ^1.2.1
   stripe_payment: ^1.0.8
   wc_flutter_share: ^0.2.2
+  rating_dialog: ^1.0.0
+  flutter_calendar_carousel: ^1.5.1
+  countdown: ^0.1.0
+  flutter_countdown_timer: ^1.4.0
+  font_awesome_flutter: ^8.10.0
 
   flutter_localizations:
     sdk: flutter

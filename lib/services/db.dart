@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:myfirstflutterapp/model/model.dart';
+import 'package:myfirstflutterapp/model/Model.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class DB {
@@ -26,11 +26,11 @@ abstract class DB {
 
   static Future<List<Map<String, dynamic>>> query(String table) async => _db.query(table);
 
-  static Future<int> insert(String table, model model) async => await _db.insert(table, model.toMap());
+  static Future<int> insert(String table, Model model) async => await _db.insert(table, model.toMap());
 
-  static Future<int> update(String table, model model) async =>
+  static Future<int> update(String table, Model model) async =>
       await _db.update(table, model.toMap(), where: 'id = ?', whereArgs: [model.id]);
 
-  static Future<int> delete(String table, model model) async =>
+  static Future<int> delete(String table, Model model) async =>
       await _db.delete(table, where: 'id = ?', whereArgs: [model.id]);
 }

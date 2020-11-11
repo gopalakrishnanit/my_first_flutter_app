@@ -19,12 +19,12 @@ import 'package:myfirstflutterapp/Widgets/secrets.dart';
   }
 }*/
 
-class mapview extends StatefulWidget {
+class Mapview extends StatefulWidget {
   @override
-  _mapviewState createState() => _mapviewState();
+  _MapviewState createState() => _MapviewState();
 }
 
-class _mapviewState extends State<mapview> {
+class _MapviewState extends State<Mapview> {
   CameraPosition _initialLocation = CameraPosition(target: LatLng(0.0, 0.0));
   GoogleMapController mapController;
 

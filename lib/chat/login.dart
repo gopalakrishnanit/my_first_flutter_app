@@ -58,6 +58,7 @@ class LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  // ignore: missing_return
   Future<User> handleSignIn() async {
     prefs = await SharedPreferences.getInstance();
 

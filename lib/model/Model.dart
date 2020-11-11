@@ -1,4 +1,4 @@
-abstract class model {
+abstract class Model {
   int id;
 
   static fromMap() {}

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
 //import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -22,12 +21,12 @@ The navigation delegate is set to block navigation to the youtube website.
 </html>
 ''';
 
-class webview extends StatefulWidget {
+class Webview extends StatefulWidget {
   @override
-  _webviewState createState() => _webviewState();
+  _WebviewState createState() => _WebviewState();
 }
 
-class _webviewState extends State<webview> {
+class _WebviewState extends State<Webview> {
   final Completer<WebViewController> _controller = Completer<WebViewController>();
 
   @override

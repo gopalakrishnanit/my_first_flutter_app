@@ -5,8 +5,9 @@ import 'package:http/http.dart' as http; // add the http plugin in pubspec.yaml 
 import 'Employee.dart';
 
 class Services {
-  static const ROOT = 'http://192.168.2.148:8090/projects/fluttersample.php';
-  static const Root1 = 'https://api.everydaysuccessteam.com/user/v1/common/gettoprankers';
+  static const Root = 'http://192.168.2.148:8090/projects/fluttersample.php';
+
+//  static const Root1 = 'https://api.everydaysuccessteam.com/user/v1/common/gettoprankers';
   static const _CREATE_TABLE_ACTION = 'CREATE_TABLE';
   static const _GET_ALL_ACTION = 'GET_ALL';
   static const _ADD_EMP_ACTION = 'ADD_EMP';
@@ -19,7 +20,7 @@ class Services {
       // add the parameters to pass to the request.
       var map = Map<String, dynamic>();
       map['action'] = _CREATE_TABLE_ACTION;
-      final response = await http.post(ROOT, body: map);
+      final response = await http.post(Root, body: map);
       print('Create Table Response: ${response.body}');
 
       if (200 == response.statusCode) {
@@ -32,25 +33,26 @@ class Services {
     }
   }
 
-  /* static Future<List<Employee>> getEmployees() async {
+  static Future<List<Employee>> getEmployees1() async {
     try {
       var map = Map<String, dynamic>();
       map['action'] = _GET_ALL_ACTION;
-      final response = await http.post(ROOT, body: map);
-      print('getEmployees Response: ${response.body}');
-      List<Employee> list = getEmployees1();
-      print(list.length);
-      return list;
-      */ /*  if (200 == response.statusCode) {
-        List<Employee> list = parseResponse(response.body);
+      final response = await http.post(Root, body: map);
+      print('getEmployees Response: ${response.body} ${response.statusCode}');
+      /*List<Employee> list = getEmployees1();
+      print(list.length);*/
+      // return list;
+      if (200 == response.statusCode) {
+        // List<Employee> list = parseResponse(response.body);
+        List<Employee> list = _parseJsonForCrosswords(response.body.toString());
         return list;
       } else {
         return List<Employee>();
-      }*/ /*
+      }
     } catch (e) {
       return List<Employee>(); // return an empty list on exception/error
     }
-  }*/
+  }
 
   static List<Employee> parseResponse(String responseBody) {
     final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
@@ -64,7 +66,8 @@ class Services {
       map['action'] = _ADD_EMP_ACTION;
       map['first_name'] = firstName;
       map['last_name'] = lastName;
-      final response = await http.post(ROOT, body: map);
+      final response = await http.post(Root, body: map);
+      print("fff $response");
       print('addEmployee Response: ${response.body}');
       if (200 == response.statusCode) {
         return response.body;
@@ -84,7 +87,7 @@ class Services {
       map['emp_id'] = empId;
       map['first_name'] = firstName;
       map['last_name'] = lastName;
-      final response = await http.post(ROOT, body: map);
+      final response = await http.post(Root, body: map);
       print('updateEmployee Response: ${response.body}');
       if (200 == response.statusCode) {
         return response.body;
@@ -102,7 +105,7 @@ class Services {
       var map = Map<String, dynamic>();
       map['action'] = _DELETE_EMP_ACTION;
       map['emp_id'] = empId;
-      final response = await http.post(ROOT, body: map);
+      final response = await http.post(Root, body: map);
       print('deleteEmployee Response: ${response.body}');
       if (200 == response.statusCode) {
         return response.body;
@@ -114,11 +117,11 @@ class Services {
     }
   }
 
-  static Future<List<Employee>> getEmployees1() async {
+  static Future<List<Employee>> getEmployees() async {
     try {
       var map = Map<String, dynamic>();
       map['action'] = _GET_ALL_ACTION;
-      final response = await http.get(Root1, headers: {
+      final response = await http.get(Root, headers: {
         'Content-type': 'application/json',
         'Accept': 'application/json',
         "Authorization":

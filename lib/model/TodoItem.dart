@@ -1,6 +1,6 @@
-import 'package:myfirstflutterapp/model/model.dart';
+import 'package:myfirstflutterapp/model/Model.dart';
 
-class TodoItem extends model {
+class TodoItem extends Model {
   static String table = 'todo_items';
 
   int id;

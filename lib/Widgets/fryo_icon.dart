@@ -4,6 +4,7 @@ class Fryo {
   Fryo._();
 
   static const _kFontFam = 'Fryo';
+  static const MaterialIcons = 'Fryo';
 
   static const IconData music = const IconData(0xe800, fontFamily: _kFontFam);
   static const IconData search = const IconData(0xe801, fontFamily: _kFontFam);
@@ -49,7 +50,7 @@ class Fryo {
   static const IconData beaker = const IconData(0xe829, fontFamily: _kFontFam);
   static const IconData truck = const IconData(0xe82a, fontFamily: _kFontFam);
   static const IconData money = const IconData(0xe82b, fontFamily: _kFontFam);
-  static const IconData food = const IconData(0xe82c, fontFamily: _kFontFam);
+  static const IconData food = const IconData(0xe82c, fontFamily: MaterialIcons);
   static const IconData shop = const IconData(0xe82d, fontFamily: _kFontFam);
   static const IconData diamond_1 = const IconData(0xe82e, fontFamily: _kFontFam);
   static const IconData t_shirt = const IconData(0xe82f, fontFamily: _kFontFam);

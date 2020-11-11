@@ -30,29 +30,30 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   String errorMessage = '';
   String successMessage = '';
-  String _filePath;
+
+  // String _filePath;
 
   //static const MethodChannel _channel = const MethodChannel('file_picker');
-  static const String _tag = 'FilePicker';
-  String _fileName = '...';
-  String _path = '...';
-  String _extension;
-  bool _hasValidMime = false;
-  FileType _pickingType;
-  TextEditingController _controller = new TextEditingController();
+  // static const String _tag = 'FilePicker';
+  //String _fileName = '...';
+  // String _path = '...';
+  // String _extension;
+  // bool _hasValidMime = false;
+  // FileType _pickingType;
+  //TextEditingController _controller = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     //TODO update what details you want
     //test feild state
-    String email = "";
-    String password = "";
-    String name = "";
-    String city = "";
-    String phonenumber = "";
+    // String email = "";
+    //String password = "";
+    //String name = "";
+    //String city = "";
+    //String phonenumber = "";
 
     //for showing loading
-    bool loading = false;
+    // bool loading = false;
 
     // this below line is used to make notification bar transparent
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
@@ -375,7 +376,7 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  /***************insert to sqlite***************************/
+  /// ************* insert to sqlite ***************************/
   void _save() async {
     await DB.init();
 
@@ -394,7 +395,7 @@ class _RegisterState extends State<Register> {
     setState(() {});
   }
 
-  /**********normal service*****************/
+  ///**********normal service*****************/
   save() async {
     String email = FormCard.emailController.text.toString().trim().toLowerCase();
     String password = FormCard.passwordController.text.toString().trim().toLowerCase();
@@ -430,7 +431,7 @@ class _RegisterState extends State<Register> {
         });
   }
 
-  /*******************Firebase service***********************/
+  ///*******************Firebase service***********************/
   // ignore: deprecated_member_use
   Future<FirebaseUser> signUp() async {
     try {

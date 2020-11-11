@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 
-class multipickimage extends StatefulWidget {
+class Multipickimage extends StatefulWidget {
   @override
-  _multipickimageState createState() => new _multipickimageState();
+  _MultipickimageState createState() => new _MultipickimageState();
 }
 
-class _multipickimageState extends State<multipickimage> {
+class _MultipickimageState extends State<Multipickimage> {
   String _error = 'No Error Dectected';
-  final GlobalKey<ScaffoldState> _scaffoldstate = new GlobalKey<ScaffoldState>();
+
+  // final GlobalKey<ScaffoldState> _scaffoldstate = new GlobalKey<ScaffoldState>();
   List<Asset> images = List<Asset>();
 
   @override

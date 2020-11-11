@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:myfirstflutterapp/util/Repository.dart';
 
 import 'Employee.dart';
 import 'Services.dart';
 
+// ignore: must_be_immutable
 class DataTableDemo extends StatefulWidget {
   //
   int index = 0;
@@ -16,8 +18,11 @@ class DataTableDemo extends StatefulWidget {
 }
 
 class DataTableDemoState extends State<DataTableDemo> {
+  Repository repo = Repository();
   List<Employee> _employees;
   GlobalKey<ScaffoldState> _scaffoldKey;
+  List<String> _states = ["Choose a state"];
+  String _selectedState = "Choose a state";
 
   // controller for the First Name TextField we are going to create.
   TextEditingController _firstNameController;
@@ -30,8 +35,8 @@ class DataTableDemoState extends State<DataTableDemo> {
 
   @override
   void initState() {
+    _states = List.from(_states)..addAll(repo.getStates());
     super.initState();
-    print("init");
     _employees = [];
     _isUpdating = false;
     _titleProgress = widget.title;
@@ -70,11 +75,12 @@ class DataTableDemoState extends State<DataTableDemo> {
   // Now lets add an Employee
   _addEmployee() {
     if (_firstNameController.text.isEmpty || _lastNameController.text.isEmpty) {
-      print('Empty Fields');
+      _showSnackBar(context, "Empty field");
       return;
     }
     _showProgress('Adding Employee...');
     Services.addEmployee(_firstNameController.text, _lastNameController.text).then((result) {
+      print(result);
       if ('success' == result) {
         _getEmployees1(); // Refresh the List after adding each employee...
         _clearValues();
@@ -125,7 +131,10 @@ class DataTableDemoState extends State<DataTableDemo> {
   }
 
   _showValues(Employee employee) {
-    print(employee.affiliate_name);
+    print("New String: ${employee.affiliate_name.substring(6)}");
+
+    // from index 6 to the last index
+    print("New String: ${employee.affiliate_name.substring(2, 6)}");
     _firstNameController.text = employee.affiliate_name;
     _lastNameController.text = employee.rank_name;
   }
@@ -134,7 +143,7 @@ class DataTableDemoState extends State<DataTableDemo> {
   SingleChildScrollView _dataBody() {
     // Both Vertical and Horozontal Scrollview for the DataTable to
     // scroll both Vertical and Horizontal...
-    var index = 0;
+    // var index = 0;
     print('inside databody');
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -159,57 +168,58 @@ class DataTableDemoState extends State<DataTableDemo> {
           rows: _employees
               .map(
                 (employee) => DataRow(
-                  cells: [
-                    DataCell(
-                      Text('{$index+1}'),
-                      // Add tap in the row and populate the
-                      // textfields with the corresponding values to update
-                      onTap: () {
-                        _showValues(employee);
-                        // Set the Selected employee to Update
-                        _selectedEmployee = employee;
-                        setState(() {
-                          _isUpdating = true;
-                        });
-                      },
-                    ),
-                    DataCell(
-                      Text(
-                        employee.affiliate_name.toUpperCase(),
-                      ),
-                      onTap: () {
-                        _showValues(employee);
-                        // Set the Selected employee to Update
-                        _selectedEmployee = employee;
-                        // Set flag updating to true to indicate in Update Mode
-                        setState(() {
-                          _isUpdating = true;
-                        });
-                      },
-                    ),
-                    DataCell(
-                      Text(
-                        employee.rank_name.toUpperCase(),
-                      ),
-                      onTap: () {
-                        _showValues(employee);
-                        // Set the Selected employee to Update
-                        _selectedEmployee = employee;
-                        setState(() {
-                          _isUpdating = true;
-                        });
-                      },
-                    ),
-                    DataCell(IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        _deleteEmployee(employee);
-                      },
-                    ))
-                  ],
-                  selected: false,
+              cells: [
+                DataCell(
+                  // Text('{$index+1}'),
+                  Text(employee.id),
+                  // Add tap in the row and populate the
+                  // textfields with the corresponding values to update
+                  onTap: () {
+                    _showValues(employee);
+                    // Set the Selected employee to Update
+                    _selectedEmployee = employee;
+                    setState(() {
+                      _isUpdating = true;
+                    });
+                  },
                 ),
-              )
+                DataCell(
+                  Text(
+                    employee.affiliate_name.toUpperCase(),
+                  ),
+                  onTap: () {
+                    _showValues(employee);
+                    // Set the Selected employee to Update
+                    _selectedEmployee = employee;
+                    // Set flag updating to true to indicate in Update Mode
+                    setState(() {
+                      _isUpdating = true;
+                    });
+                  },
+                ),
+                DataCell(
+                  Text(
+                    employee.rank_name.toUpperCase(),
+                  ),
+                  onTap: () {
+                    _showValues(employee);
+                    // Set the Selected employee to Update
+                    _selectedEmployee = employee;
+                    setState(() {
+                      _isUpdating = true;
+                    });
+                  },
+                ),
+                DataCell(IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    _deleteEmployee(employee);
+                  },
+                ))
+              ],
+              selected: false,
+            ),
+          )
               .toList(),
         ),
       ),
@@ -251,6 +261,7 @@ class DataTableDemoState extends State<DataTableDemo> {
                 ),
               ),
             ),
+
             Padding(
               padding: EdgeInsets.all(20.0),
               child: TextField(
@@ -260,28 +271,39 @@ class DataTableDemoState extends State<DataTableDemo> {
                 ),
               ),
             ),
+            DropdownButton<String>(
+              isExpanded: true,
+              items: _states.map((String dropDownStringItem) {
+                return DropdownMenuItem<String>(
+                  value: dropDownStringItem,
+                  child: Text(dropDownStringItem),
+                );
+              }).toList(),
+              onChanged: (value) => _onSelectedState(value),
+              value: _selectedState,
+            ),
             // Add an update button and a Cancel Button
             // show these buttons only when updating an employee
             _isUpdating
                 ? Row(
-                    children: <Widget>[
-                      OutlineButton(
-                        child: Text('UPDATE'),
-                        onPressed: () {
-                          _updateEmployee(_selectedEmployee);
-                        },
-                      ),
-                      OutlineButton(
-                        child: Text('CANCEL'),
-                        onPressed: () {
-                          setState(() {
-                            _isUpdating = false;
-                          });
-                          _clearValues();
-                        },
-                      ),
-                    ],
-                  )
+              children: <Widget>[
+                OutlineButton(
+                  child: Text('UPDATE'),
+                  onPressed: () {
+                    _updateEmployee(_selectedEmployee);
+                  },
+                ),
+                OutlineButton(
+                  child: Text('CANCEL'),
+                  onPressed: () {
+                    setState(() {
+                      _isUpdating = false;
+                    });
+                    _clearValues();
+                  },
+                ),
+              ],
+            )
                 : Container(),
             Expanded(
               child: _dataBody(),
@@ -296,5 +318,14 @@ class DataTableDemoState extends State<DataTableDemo> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  void _onSelectedState(String value) {
+    _firstNameController.text = value;
+    _lastNameController.text = value;
+    _addEmployee();
+    setState(() {
+      _selectedState = value;
+    });
   }
 }
